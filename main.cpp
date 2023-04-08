@@ -99,7 +99,7 @@ class Battle {
     vector<vector<double>> statesTable;
 
     void printStatesTable() {
-      cout << setprecision(4) << fixed;
+      cout << setprecision(2) << fixed;
         cout << "D\\A    ";
       for(int j=nAtt-1; j>=0; j--) {
         cout << j+1 << "        ";
@@ -164,10 +164,10 @@ class Battle {
       return probSum;
     }
     double hopeNumSoldiers() {
-      return 0;
-    }
-    double probNumWinnerSoldiers() {
-      return 0;
+      double hope = 0;
+      for(int i=0; i<nAtt; i++)
+        hope+= (i+1)*statesTable[0][i];
+      return hope;
     }
 };
 
@@ -183,7 +183,10 @@ int main() {
 
 
   Battle bt(nAtt,nDef);
+  cout << setprecision(3) << fixed;
   cout << "\nBatalha " << nAtt << " vs " << nDef << "\nProbabilidade de vitória: " << bt.probAttackWin() << endl;
+  cout << setprecision(1) << fixed;
+  cout << "Número de soldados restantes: " << bt.hopeNumSoldiers() << endl;
 
   return 0;
 }
