@@ -76,8 +76,7 @@ class DicesProbability {
 
           if(nDiceVictory == remainA)
             nValidRounds++;
-          if(nDiceVictory<0)
-            cout << "hello";
+      
           count++;
         }
       }
@@ -103,9 +102,9 @@ class Battle {
 
     void printStatesTable() {
       cout << setprecision(4) << fixed;
-        cout << "D\\A  ";
+        cout << "D\\A    ";
       for(int j=nAtt-1; j>=0; j--) {
-        cout << j+1 << "      ";
+        cout << j+1 << "        ";
       }
       cout << "\n" << endl;
       for(int i=nDef; i>=0; i--) {
@@ -121,28 +120,29 @@ class Battle {
     void incrementProbState(int d, int a, double stateProb) {
       double prob;
       int diagSize, remainAtt, remainA;
+      DicesProbability round(d, a);
       
-      if(a>=3 && d>=3)
+      if(a>3 && d>=3){
         diagSize = 4;
+        remainA = 0;
+      }
       else if(a > d) {
         diagSize = d+1;
         remainA = 3 - d;
-      } else {
+      } else 
         diagSize = a+1;
-        remainA = 0;
-      }
 
       for(int i=0; i<diagSize && a>0 && d>0; i++) {
         int nextA, nextD;
-        DicesProbability round(d, a);
         nextA = a-(diagSize-1)+i;
         nextD = d-i;
+        if(nextA <= 3)
+          remainA = nextA;
         prob = stateProb * round.probForRemainingAttackers(remainA);
         incrementProbState(nextD, nextA, prob);
         remainA++;
       }
       statesTable[d][a] += stateProb;
-      // printStatesTable();
     }
     
     void fillStatesTable() {
@@ -161,6 +161,7 @@ class Battle {
       for(int i=0; i<nAtt; i++) {
         probSum+= statesTable[0][i];
       }
+      printStatesTable();
       return probSum;
     }
     double hopeNumSoldiers() {
