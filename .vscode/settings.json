@@ -2,6 +2,8 @@
   "files.associations": {
     "random": "cpp",
     "*.tcc": "cpp",
-    "vector": "cpp"
+    "vector": "cpp",
+    "iostream": "cpp",
+    "iomanip": "cpp"
   }
 }
