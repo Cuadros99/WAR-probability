@@ -135,11 +135,11 @@ class Battle {
           } else {
             diagSize = a+1;
           }
-          for(int i=0; i<diagSize && a>0 && d>0; i++) {
+          for(int i=0; i<diagSize && a>0 && d>0 && statesTable[d][a]!=0 ; i++) {
             int nextA, nextD;
             nextA = a-(diagSize-1)+i;
             nextD = d-i;
-            if(nextA <= 3)
+            if(a <= 3)
               remainA = nextA;
             nextStateProb = statesTable[d][a] * round.probForRemainingAttackers(remainA);
             statesTable[nextD][nextA]+=nextStateProb;
@@ -160,7 +160,7 @@ class Battle {
       for(int i=0; i<nAtt; i++) {
         probSum+= statesTable[0][i];
       }
-      printStatesTable();
+      // printStatesTable();
       return probSum;
     }
     double hopeNumSoldiers() {
@@ -183,7 +183,7 @@ int main() {
 
 
   Battle bt(nAtt,nDef);
-  cout << "Batalha " << nAtt << " vs " << nDef << "\n\n Probabilidade de vitória: " << bt.probAttackWin() << endl;
+  cout << "\nBatalha " << nAtt << " vs " << nDef << "\nProbabilidade de vitória: " << bt.probAttackWin() << endl;
 
   return 0;
 }
