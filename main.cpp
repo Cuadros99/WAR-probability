@@ -98,8 +98,6 @@ class Battle {
     int nAtt, nDef;
     vector<vector<double>> statesTable;
 
-    
-
     void printStatesTable() {
       cout << setprecision(4) << fixed;
         cout << "D\\A    ";
@@ -114,41 +112,42 @@ class Battle {
         }
         cout << endl;
       }
-      cout << "\n\n" << endl;
-    }
-
-    void incrementProbState(int d, int a, double stateProb) {
-      double prob;
-      int diagSize, remainAtt, remainA;
-      DicesProbability round(d, a);
-      
-      if(a>3 && d>=3){
-        diagSize = 4;
-        remainA = 0;
-      }
-      else if(a > d) {
-        diagSize = d+1;
-        remainA = 3 - d;
-      } else 
-        diagSize = a+1;
-
-      for(int i=0; i<diagSize && a>0 && d>0; i++) {
-        int nextA, nextD;
-        nextA = a-(diagSize-1)+i;
-        nextD = d-i;
-        if(nextA <= 3)
-          remainA = nextA;
-        prob = stateProb * round.probForRemainingAttackers(remainA);
-        incrementProbState(nextD, nextA, prob);
-        remainA++;
-      }
-      statesTable[d][a] += stateProb;
+      cout << endl;
     }
     
     void fillStatesTable() {
       int auxNAtt = nAtt-1;
-      incrementProbState(nDef,auxNAtt,1);
+      double nextStateProb;
+      int diagSize, remainA;
+
+      statesTable[nDef][auxNAtt] = 1;
+
+      for(int d=nDef; d>=0; d--) {
+        for(int a=auxNAtt; a>=0; a--) {
+          DicesProbability round(d, a);
+          if(a>3 && d>=3){
+            diagSize = 4;
+            remainA = 0;
+          }
+          else if(a>d) {
+            diagSize =d+1;
+            remainA = 3 - d;
+          } else {
+            diagSize = a+1;
+          }
+          for(int i=0; i<diagSize && a>0 && d>0; i++) {
+            int nextA, nextD;
+            nextA = a-(diagSize-1)+i;
+            nextD = d-i;
+            if(nextA <= 3)
+              remainA = nextA;
+            nextStateProb = statesTable[d][a] * round.probForRemainingAttackers(remainA);
+            statesTable[nextD][nextA]+=nextStateProb;
+            remainA++;
+          }
+      }
     }
+  }
   public:
     Battle(int a, int d) {
       nAtt = a;
@@ -176,9 +175,15 @@ class Battle {
 
 int main() {
 
-  Battle bt(4,2);
+  int nAtt, nDef;
 
-  cout << bt.probAttackWin() << endl;
+  cout << "Insira Nº ataque Nº defesa: ";
+  cin >> nAtt >> nDef;
+
+
+
+  Battle bt(nAtt,nDef);
+  cout << "Batalha " << nAtt << " vs " << nDef << "\n\n Probabilidade de vitória: " << bt.probAttackWin() << endl;
 
   return 0;
 }
